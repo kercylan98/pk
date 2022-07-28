@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="zh" class="no-js">
+	<head>
+		<link rel="stylesheet" type="text/css" href="../static/css/index.css"/>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>IB (International Baccalaureate Organization) Plan schedule</title>
+		<link href='/static/css/font-google.css' rel='stylesheet' type='text/css'>
+
+		<link rel="stylesheet" href="/static/css/reset.css"> <!-- CSS reset -->
+		<link rel="stylesheet" href="/static/css/style.css"> <!-- Gem style -->
+		<script src="/static/js/supports/modernizr.js"></script> <!-- Modernizr -->
+	</head>
+	<body>
+		<input id="upload-data-file" type="file" name="file" value="" style="display: none">
+		<section id="cd-table">
+			<div class="root-header">
+				<ul>
+					<li>
+						<h2>
+							当前方案：
+							{{if .plan}}
+								<span id="plan-name" style="cursor: pointer;color: coral !important; float: right !important; margin-top: 1px !important;">
+									{{.plan.Name}}
+								</span>
+							{{else}}
+								<span id="plan-name" style="cursor: pointer;color: coral !important; float: right !important; margin-top: 1px !important;">
+									请选择一个方案
+								</span>
+							{{end}}
+						</h2>
+					</li>
+					<li><h2 id="new-plan" style="cursor: pointer">新建</h2></li>
+					{{if .plan}}
+						<li><a href="/v1/plan/template"><h2 style="cursor: pointer">导入模板下载</h2></a></li>
+						<li><h2 id="upload-data" style="cursor: pointer">导入数据</h2></li>
+						<li><h2 id="auto-build" style="cursor: pointer">自动排课</h2></li>
+						<li><h2 id="auto-optimize" style="cursor: pointer">自动优化</h2></li>
+						<li><h1 style="cursor: default">|</h1></li>
+						<li><h2 class="select-stage" style="cursor: pointer">全部年级</h2></li>
+						{{range $index, $elem := index .plan.Stage}}
+							<li><h2 class="select-stage" style="cursor: pointer">{{$elem}}</h2></li>
+						{{end}}
+						<li><h1 style="cursor: default">|</h1></li>
+{{/*						<li><h2 id="setting" style="cursor: not-allowed">方案设置</h2></li>*/}}
+{{/*						<li><h2 style="cursor: not-allowed">课程调整</h2></li>*/}}
+{{/*						<li><h2 style="cursor: not-allowed">场地设置</h2></li>*/}}
+{{/*						<li><h2 style="cursor: not-allowed">禁排设置</h2></li>*/}}
+{{/*						<li><h1 style="cursor: default">|</h1></li>*/}}
+{{/*						<li><h2 style="cursor: not-allowed">冲突校验</h2></li>*/}}
+						<li><a href="/v1/plan/draw"><h2 id="draw" style="cursor: pointer">导出课表</h2></a></li>
+{{/*						<li><h2 style="cursor: not-allowed">导入模板</h2></li>*/}}
+
+					{{end}}
+
+				</ul>
+			</div>
+
+			{{if .plan}}
+				<header class="cd-table-column">
+					<h2 id="waits-name" style="cursor: pointer">
+						待排：{{.plan.Waits|len}} 总计：{{.plan.NowCourseTotal}} <span style="font-size: 12px!important;text-align: right!important;">查看待排</span>
+					</h2>
+					<ul>
+						{{range $index, $elem := index .plan.Journeys 0}}
+							<li style="height: 150px!important;cursor:default;">第{{$index | slfadd}}节课</li>
+						{{end}}
+					</ul>
+				</header>
+
+				<div class="cd-table-container">
+					<div class="cd-table-wrapper all-section">
+						{{range $w, $week := index .plan.Journeys}}
+							<div class="cd-table-column">
+								<h2 style="cursor: default">第{{$w | slfadd}}周</h2>
+								<ul>
+									{{range $s, $section := index $week}}
+										<li class="course-box" isbox="true" sectioninfo="{{$w}}|{{$s}}" week="{{$w}}" section="{{$s}}" style="height: 150px !important;">
+											<ul class="courses" style="height: 150px" week="{{$w}}" section="{{$s}}">
+												{{range $c, $course := index $section}}
+													<li class="course-item" week="{{$w}}"
+														course="{{$course.Name}}"
+														section="{{$s}}" style="height: auto !important;line-height: 12px!important;font-size: 12px !important;margin-bottom: 1px"
+														room="{{$course.Room}}"
+														teacher="{{$course.TeacherStr}}"
+														stage="{{$course.Stage}}"
+													>{{$course.Name}}
+													<div class="moreinfo">
+														{{if eq $course.TeacherStr ""}}
+														{{else}}
+															{{$course.TeacherStr}}
+														{{end}}
+														{{if eq $course.Room ""}}
+														{{else}}
+															> {{$course.Room}}
+														{{end}}
+													</div>
+													</li>
+												{{end}}
+											</ul>
+											<div class="cause">
+											</div>
+										</li>
+									{{end}}
+								</ul>
+							</div> <!-- cd-table-column -->
+						{{end}}
+					</div> <!-- cd-table-wrapper -->
+				</div> <!-- cd-table-container -->
+			{{else}}
+				<div style="height: 100% !important;">
+					<h2 style="cursor: default">请先新建或打开一个方案</h2>
+				</div>
+			{{end}}
+
+
+
+			<em class="cd-scroll-right"></em>
+		</section> <!-- cd-table -->
+
+		<ul id="plans" style="display: none;">
+			{{range $index, $elem := index .plans}}
+				<li class="plans-item">{{$elem}}</li>
+			{{end}}
+		</ul>
+
+
+		{{if .plan}}
+			<ul id="waits" class="courses" style="display: none;">
+				{{range $c, $course := .plan.Waits}}
+					<li course="{{$course.Name}}"
+						room="{{$course.Room}}"
+						teacher="{{$course.TeacherStr}}"
+						stage="{{$course.Stage}}"
+						class="course-item" style="height: auto !important;line-height: 12px!important;font-size: 12px !important;margin-bottom: 1px">{{$course.Name}}
+						<div class="moreinfo">
+							{{if eq $course.TeacherStr ""}}
+							{{else}}
+								{{$course.TeacherStr}}
+							{{end}}
+							{{if eq $course.Room ""}}
+							{{else}}
+								> {{$course.Room}}
+							{{end}}
+						</div>
+					</li>
+				{{end}}
+			</ul>
+		{{end}}
+
+		{{if .isRunning}}
+			<div class="running">
+				<h1>正在执行耗时操作，请耐心等待</h1>
+			</div>
+			<script>
+				setTimeout(function () {
+					location.reload()
+				}, 1000);
+			</script>
+		{{end}}
+
+		<div id="draggable-parent"></div>
+		<div id="hint">
+			<p id="hint-title">现在有冲突无法调整</p>
+			<p id="hint-content">现在有冲突无法调整</p>
+		</div>
+
+		<div id="setting-box">
+<!--			 style="z-index: 999999;-->
+<!--		width: auto; height: auto; overflow: initial; background: white; position: fixed; left: 40%; top: 150px;-->
+<!--border-radius: 8px; padding: 10px; min-width: 300px;box-shadow:0px 0px 10px #000;">-->
+<!--			<h2 style="line-height: 35px">课程名称</h2>-->
+<!--			<ul style="font-size: 12px; list-style: none">-->
+<!--				<li style="float: left">张三<span style="cursor: pointer; margin-left: 5px">❌</span>-->
+<!--			</ul>-->
+<!--			</br>-->
+<!--			<div>新增</div>-->
+		</div>
+
+		<script src="/static/js/supports/jquery-1.11.0.min.js"></script>
+		<script src="/static/js/supports/jquery-ui.js"></script>
+		<script src="/static/js/supports/main.js"></script> <!-- Gem jQuery -->
+		<script src="/static/js/application.js"></script>
+		<script src="/static/js/listener.js"></script>
+		<script src="/static/js/apis.js"></script>
+		<script>
+			document.oncontextmenu = function(){
+				return false;
+			}
+
+			// $('.course-item').mousedown(function(e){
+			// 	if(3 === e.which){
+			// 		alert('这是右键单击事件');
+			// 	}
+			// })
+		</script>
+	</body>
+</html>
