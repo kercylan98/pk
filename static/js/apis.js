@@ -236,6 +236,20 @@ const API = (() => {
                 }
             })
         }
+
+        // 刷新排课规则
+        Refresh = function () {
+            this[_exec]("POST", "/v1/plan/refresh", {}, function (json) {
+                if (json.Code === 0) {
+                    hint("提示", "排课方案规则刷新成功，请稍后。");
+                    window.setTimeout(function () {
+                        location.reload();
+                    }, 1500)
+                } else {
+                    hint("提示", json.Error)
+                }
+            });
+        }
     }
     return API;
 })();

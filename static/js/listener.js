@@ -167,3 +167,9 @@ $(".select-stage").click(function () {
 $("#download-template").click(function () {
 
 });
+
+$("#refresh").click(function () {
+    hint("提示", "刷新中，请稍后。");
+    Apis.Refresh();
+
+})

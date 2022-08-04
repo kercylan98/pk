@@ -28,13 +28,31 @@ func (slf *PlanController) NewPlan() {
 		if plan, err := planner.NewPlan(planName, week, section); err == nil {
 			planner.SetOnlinePlan(slf.Ctx.Request, plan)
 			return nil
-		}else {
+		} else {
 			return fmt.Sprint("err:", err.Error())
 		}
 	},
 		slf.GetString, "planName",
 		slf.GetInt, "week",
 		slf.GetInt, "section")
+	slf.ServeJSON()
+}
+
+// @Title 刷新排课规则
+// @Description 刷新排课规则
+// @Success 200 无
+// @Failure 404 找不到特定方案
+// @router /refresh [post]
+func (slf *PlanController) Refresh() {
+	slf.Data["json"] = conn.Dispose(func() (interface{}, interface{}) {
+		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil {
+			return "err:请选择排课方案", "code:10000"
+		} else {
+			plan.TestFunc()
+			plan.Save()
+			return nil, nil
+		}
+	})
 	slf.ServeJSON()
 }
 
@@ -45,18 +63,20 @@ func (slf *PlanController) NewPlan() {
 // @router /draw [get]
 func (slf *PlanController) Draw() {
 	slf.Data["json"] = conn.Dispose(func() (interface{}, interface{}) {
-		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil { return "err:请选择排课方案", "code:10000" } else {
+		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil {
+			return "err:请选择排课方案", "code:10000"
+		} else {
 			if err := plan.Draw(); err != nil {
 				return "err:课表渲染异常：" + err.Error(), "code:500"
 			}
-			if err := utils.Zip(plan.Name, "assets/" + plan.Name + ".zip"); err != nil {
+			if err := utils.Zip(plan.Name, "assets/"+plan.Name+".zip"); err != nil {
 				return "err:课表渲染异常：" + err.Error(), "code:500"
 			}
 			slf.Data["planname"] = plan.Name
 		}
 		return nil, nil
 	})
-	slf.Ctx.Output.Download("assets/" + slf.Data["planname"].(string) + ".zip", slf.Data["planname"].(string) + "_所有课表.zip")
+	slf.Ctx.Output.Download("assets/"+slf.Data["planname"].(string)+".zip", slf.Data["planname"].(string)+"_所有课表.zip")
 }
 
 // @Title 数据导入模板下载
@@ -98,7 +118,9 @@ func (slf *PlanController) SwitchOnline() {
 // @router /add [get]
 func (slf *PlanController) Add() {
 	slf.Data["json"] = conn.Dispose(func() (interface{}, interface{}) {
-		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil { return "err:请选择排课方案", "code:10000" } else {
+		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil {
+			return "err:请选择排课方案", "code:10000"
+		} else {
 			name := slf.GetString("name")
 			number := slf.GetString("number")
 			course := slf.GetString("course")
@@ -111,7 +133,6 @@ func (slf *PlanController) Add() {
 	slf.ServeJSON()
 }
 
-
 // @Title 删除学生
 // @Description 删除学生
 // @Success 200 无
@@ -119,7 +140,9 @@ func (slf *PlanController) Add() {
 // @router /del [get]
 func (slf *PlanController) Del() {
 	slf.Data["json"] = conn.Dispose(func() (interface{}, interface{}) {
-		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil { return "err:请选择排课方案", "code:10000" } else {
+		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil {
+			return "err:请选择排课方案", "code:10000"
+		} else {
 			number := slf.GetString("number")
 			course := slf.GetString("course")
 			if strings.TrimSpace(number) != "" && strings.TrimSpace(course) != "" {
@@ -138,7 +161,9 @@ func (slf *PlanController) Del() {
 // @router /auto [post]
 func (slf *PlanController) Auto() {
 	slf.Data["json"] = conn.Dispose(func() (interface{}, interface{}) {
-		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil { return "err:请选择排课方案", "code:10000" } else {
+		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil {
+			return "err:请选择排课方案", "code:10000"
+		} else {
 			plan.AutoBuild()
 			return nil, nil
 		}
@@ -153,7 +178,9 @@ func (slf *PlanController) Auto() {
 // @router /optimize [post]
 func (slf *PlanController) Optimize() {
 	slf.Data["json"] = conn.Dispose(func() (interface{}, interface{}) {
-		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil { return "err:请选择排课方案", "code:10000" } else {
+		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil {
+			return "err:请选择排课方案", "code:10000"
+		} else {
 			plan.OptimizeCount = 0
 			plan.OptimizeUseless = 0
 			plan.Optimize()
@@ -186,7 +213,7 @@ func (slf *PlanController) Import() {
 
 		if err := planner.LoadData(strings.TrimSpace(slf.GetString("planName")), filename); err != nil {
 			return fmt.Sprint("err:", err)
-		}else {
+		} else {
 			return nil
 		}
 	})
@@ -201,10 +228,12 @@ func (slf *PlanController) Import() {
 // @router /section/move [post]
 func (slf *PlanController) SectionMove() {
 	slf.Data["json"] = conn.Dispose(func(week, section, targetWeek, targetSection int) (interface{}, interface{}) {
-		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil { return "err:请选择排课方案", "code:10000" } else {
+		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil {
+			return "err:请选择排课方案", "code:10000"
+		} else {
 			for _, forbidden := range plan.Forbidden {
 				if planner.GetForbiddenNumber(forbidden[0]) == targetWeek &&
-					planner.GetForbiddenNumber(forbidden[1]) == targetSection{
+					planner.GetForbiddenNumber(forbidden[1]) == targetSection {
 					return "err:目标课位为禁排课位，需要在Excel调整", "code:500"
 				}
 			}
@@ -237,7 +266,9 @@ func (slf *PlanController) SectionMove() {
 // @router /course/move [post]
 func (slf *PlanController) CourseMove() {
 	slf.Data["json"] = conn.Dispose(func(courseName string, week, section, targetWeek, targetSection int) (interface{}, interface{}) {
-		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil { return "err:请选择排课方案", "code:10000" } else {
+		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil {
+			return "err:请选择排课方案", "code:10000"
+		} else {
 			// 如果目标week和section为-1，且week和section不为-1则放回待排课区域
 			if targetWeek == -1 && targetSection == -1 && week != -1 && section != -1 {
 				var newSection []*planner.Course
@@ -245,12 +276,12 @@ func (slf *PlanController) CourseMove() {
 					if course.Name == courseName {
 						fmt.Println("方案", plan.Name, "中", courseName, "已调整至待排课区域")
 						plan.Waits = append(plan.Waits, course)
-					}else {
+					} else {
 						newSection = append(newSection, course)
 					}
 				}
 				plan.Journeys[week][section] = newSection
-			}else {
+			} else {
 				// 如果week或者section为-1，则从待排课位找
 				if week == -1 || section == -1 {
 					var newWait []*planner.Course
@@ -260,25 +291,25 @@ func (slf *PlanController) CourseMove() {
 							isHandle = true
 							if planner.IsAllow(plan, course, targetWeek, targetSection) {
 								plan.Journeys[targetWeek][targetSection] = append(plan.Journeys[targetWeek][targetSection], course)
-							}else {
+							} else {
 								return "err:由于存在冲突，无法将课程调整到该位置", "code:500"
 							}
-						}else {
+						} else {
 							newWait = append(newWait, course)
 						}
 					}
 					plan.Waits = newWait
-				}else {
+				} else {
 					var newSection []*planner.Course
 					for _, course := range plan.Journeys[week][section] {
 						if course.Name == courseName {
 							if planner.IsAllow(plan, course, targetWeek, targetSection) {
 								fmt.Println("方案", plan.Name, "中", courseName, "已调整至周", targetWeek, "第", targetSection, "节")
 								plan.Journeys[targetWeek][targetSection] = append(plan.Journeys[targetWeek][targetSection], course)
-							}else {
+							} else {
 								return "err:由于存在冲突，无法将课程调整到该位置", "code:500"
 							}
-						}else {
+						} else {
 							newSection = append(newSection, course)
 						}
 					}
@@ -308,7 +339,9 @@ func (slf *PlanController) CourseMove() {
 func (slf *PlanController) Allows() {
 	slf.Data["json"] = conn.Dispose(func(courseName string) (interface{}, interface{}) {
 		courseName = strings.TrimSpace(courseName)
-		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil { return "err:请选择排课方案", "code:10000" } else {
+		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil {
+			return "err:请选择排课方案", "code:10000"
+		} else {
 			for _, course := range plan.Waits {
 				if course.Name == courseName {
 					course.Cause = planner.GetAllCause(plan, course)
@@ -333,7 +366,9 @@ func (slf *PlanController) Allows() {
 // @router /course/unallowable [get]
 func (slf *PlanController) Unallowable() {
 	slf.Data["json"] = conn.Dispose(func(courseName string, week, section int) (interface{}, interface{}) {
-		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil { return "err:请选择排课方案", "code:10000" } else {
+		if plan := planner.GetOnlinePlan(slf.Ctx.Request); plan == nil {
+			return "err:请选择排课方案", "code:10000"
+		} else {
 			for _, course := range plan.Journeys[week][section] {
 				if course.Name == courseName {
 					course.Cause = planner.GetAllCause(plan, course)

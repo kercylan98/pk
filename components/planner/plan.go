@@ -26,7 +26,7 @@ type Plan struct {
 	CourseCount      int                  // 总课时数
 	NowCourseTotal   int                  // 当前总课时数
 
-	Forbidden         [][]interface{} // 禁排课位[]{week，section，other}
+	Forbidden         [][]interface{} // 禁排课位[]
 	IsRunning         bool            // 耗时操作中
 	TryContinuous     bool            // 尝试课程尽量连排
 	MustContinuousTwo []string        // 必须两节连排的科目
@@ -39,225 +39,235 @@ type Plan struct {
 
 // 测试功能
 func (slf *Plan) TestFunc() {
-	if strings.Contains(strings.ToLower(slf.Name), "carr") {
-		slf.TryContinuous = true
-		slf.WeekNumRangMax = 2
-		// 上午
-		slf.AddForbidden(1, 5, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(1, 8, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(1, 10, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(1, 11, FORBIDDEN_DEFAULT)
+	slf.Forbidden = [][]interface{}{}
+	slf.TryContinuous = true
+	slf.WeekNumRangMax = 2
+	// 上午
 
-		slf.AddForbidden(2, 3, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(2, 4, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(2, 5, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(2, 8, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(2, 9, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(2, 10, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(2, 11, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(1, 5, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(1, 8, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(1, 10, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(1, 11, FORBIDDEN_DEFAULT)
 
-		slf.AddForbidden(3, 3, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(3, 4, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(3, 5, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(3, 9, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(3, 10, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(3, 11, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(2, 3, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(2, 4, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(2, 5, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(2, 8, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(2, 9, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(2, 10, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(2, 11, FORBIDDEN_DEFAULT)
 
-		slf.AddForbidden(4, 4, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(4, 5, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(4, 10, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(4, 11, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(3, 3, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(3, 4, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(3, 5, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(3, 9, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(3, 10, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(3, 11, FORBIDDEN_DEFAULT)
 
-		slf.AddForbidden(5, 5, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(5, 7, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(5, 9, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(5, 10, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(5, 11, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(4, 4, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(4, 5, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(4, 10, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(4, 11, FORBIDDEN_DEFAULT)
 
-		//for _, t := range []string{"王怡俊", "付玉洁", "佟登青", "费江东"} {
-		// 数学教研活动
-		//slf.AddForbidden(3, 6, FORBIDDEN_TEACHER, t)
-		//slf.AddForbidden(3, 7, FORBIDDEN_TEACHER, t)
-		//slf.AddForbidden(3, 8, FORBIDDEN_TEACHER, t)
-		//slf.AddForbidden(3, 9, FORBIDDEN_TEACHER, t)
-		//slf.AddForbidden(3, 10, FORBIDDEN_TEACHER, t)
-		//slf.AddForbidden(3, 11, FORBIDDEN_TEACHER, t)
-		//}
+	slf.AddForbidden(5, 5, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(5, 7, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(5, 9, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(5, 10, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(5, 11, FORBIDDEN_DEFAULT)
 
-		//for _, t := range []string{"周旭梅", "王思琪", "孙周易", "姜莲根"} {
+	//for _, t := range []string{"Scarlett He","Catherine Yang","new Chinese teacher"," New Math teacher","newEnglish teacher","Ally Zhu"} {
+	// 数学教研活动
+	//slf.AddForbidden(1, 1, FORBIDDEN_TEACHER, t)
+	//slf.AddForbidden(2, 1, FORBIDDEN_TEACHER, t)
+	//slf.AddForbidden(3, 1, FORBIDDEN_TEACHER, t)
+	//slf.AddForbidden(4, 1, FORBIDDEN_TEACHER, t)
+	//slf.AddForbidden(5, 1, FORBIDDEN_TEACHER, t)
+	//slf.AddForbidden(3, 11, FORBIDDEN_TEACHER, t)
+	//}
+
+	for _, t := range []string{"康彬", "沈波", "何思佳", "祝琴琴", "罗倩", "宗慧", "刘娜", "郁龙", "新数学老师", "杨子青", "新语文老师", "新中文老师"} {
 		// 语文教研活动
-		//slf.AddForbidden(4, 6, FORBIDDEN_TEACHER, t)
-		//slf.AddForbidden(4, 7, FORBIDDEN_TEACHER, t)
-		//slf.AddForbidden(4, 8, FORBIDDEN_TEACHER, t)
-		//slf.AddForbidden(4, 9, FORBIDDEN_TEACHER, t)
+		slf.AddForbidden(2, 1, FORBIDDEN_TEACHER, t)
+		slf.AddForbidden(3, 1, FORBIDDEN_TEACHER, t)
+		slf.AddForbidden(4, 1, FORBIDDEN_TEACHER, t)
+		slf.AddForbidden(5, 1, FORBIDDEN_TEACHER, t)
 		//slf.AddForbidden(4, 10, FORBIDDEN_TEACHER, t)
 		//slf.AddForbidden(4, 11, FORBIDDEN_TEACHER, t)
-		//}
-
-	} else {
-
-		// 尽量连排，同时尽量保证每个课程每天不超过2节
-		slf.TryContinuous = true
-		slf.WeekNumRangMax = 2
-
-		// DP2 VA: HL 必须2节连排
-		//slf.MustContinuousTwo = append(slf.MustContinuousTwo, "DP2 VA: HL")
-		//
-		//
-		//		// 所有课程必须2节连排
-		//		slf.MustContinuousTwo = append(slf.MustContinuousTwo, strings.Split(`DP2 physics HL+SL+A-level
-		//DP2 physics HL+A-level
-		//G12 physics A-level
-		//DP2 chemistry HL+SL
-		//DP2 chemistry HL
-		//DP2 Biology HL&SL
-		//DP2 Biology HL
-		//DP2 ESS
-		//DP2 Sports sceince SL
-		//G12 Alevel biology
-		//DP2 TOK in Chinese
-		//DP2 TOK in English
-		//G12 Alevel Critical thinking and writing (CTW)
-		//DP2 English B: HL
-		//DP2 English B: SL
-		//G12 English (AS Level 9093)
-		//Combined A-level English
-		//DP2 Eco: HL&SL
-		//DP2 Eco: HL
-		//DP2 BM: HL & SL
-		//DP2 BM: HL
-		//DP2 Psychology: HL &SL
-		//DP2 Psychology: HL
-		//DP2 Alevel Economics
-		//DP2 Chinese A: literature HL & SL
-		//DP2 Chinese A: literature HL
-		//DP2 Chinese A:language &literature SL & HL
-		//DP2 Chinese A:language &literature HL
-		//DP2 Math AA: HL
-		//DP2 Math AA: SL
-		//G12 A-level Math (Pure)
-		//G12 A-level Math (Prob&Stats)
-		//DP2 VA: HL
-		//DP1 physics HL + SL
-		//DP1 physics HL
-		//DP1 chemistry HL/SL + A level
-		//DP1 chemistry HL + A level
-		//G11 chemistry A level
-		//DP1 Biology HL/SL
-		//G11 Biology A level
-		//DP1 Sports sceince HL+SL
-		//DP1 Sports sceince HL
-		//DP1 ESS
-		//G11 Alevel Critical thinking and writing (CTW) &IPQ
-		//DP1 English B: HL
-		//DP1 English B: SL
-		//DP1 English B: SL Rebecca
-		//DP1 English B: SL Tina
-		//DP1 Eco: HL&SL
-		//DP1 Eco: HL
-		//DP1 BM: HL & SL
-		//DP1 BM: HL
-		//G11 A level BM
-		//DP1 Psychology: HL &SL
-		//DP1 Psychology: HL
-		//G11 A level Economics
-		//G11 A level Psychology
-		//DP1 Chinese A: literature HL & SL
-		//DP1 Chinese A: literature HL
-		//DP1 Chinese A:language &literature SL A&B
-		//DP1 Chinese A:language &literature SL X&Y
-		//DP1 Chinese A:language &literature HL
-		//DP1 Math AA: HL
-		//DP1 Math AA: SL
-		//G11 Alevel math
-		//DP1 VA: HL +SL
-		//DP1 VA: HL
-		//DP1 Music: HL +SL
-		//DP1 Music: HL`, "\n")...)
-		//
-
-		//
-		//slf.AddForbidden(1, 1, FORBIDDEN_DEFAULT)
-		//slf.AddForbidden(5, 11, FORBIDDEN_DEFAULT)
-		//
-		//
-		// 禁牌课位，周五7、8、9、10节，周二10节、周四10节
-		slf.AddForbidden(1, 1, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(2, 10, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(4, 10, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(5, 8, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(5, 9, FORBIDDEN_DEFAULT)
-		slf.AddForbidden(5, 10, FORBIDDEN_DEFAULT)
-		//slf.AddForbidden(2, 10, FORBIDDEN_DEFAULT)
-		//slf.AddForbidden(4, 10, FORBIDDEN_DEFAULT)
-		//
-		//// 全年级School counselling课
-		//slf.AddForbidden(1, 8, FORBIDDEN_DEFAULT)
-		//
-		// 给TOK预留的课位，禁排高二周一9、10节
-		slf.AddForbidden(2, 8, FORBIDDEN_STAGE, "G10")
-		slf.AddForbidden(2, 9, FORBIDDEN_STAGE, "G10")
-		slf.AddForbidden(4, 8, FORBIDDEN_STAGE, "G10")
-		slf.AddForbidden(4, 9, FORBIDDEN_STAGE, "G10")
-		slf.AddForbidden(2, 8, FORBIDDEN_STAGE, "G9")
-		slf.AddForbidden(2, 9, FORBIDDEN_STAGE, "G9")
-		slf.AddForbidden(4, 8, FORBIDDEN_STAGE, "G9")
-		slf.AddForbidden(4, 9, FORBIDDEN_STAGE, "G9")
-		//slf.AddForbidden(1, 10, FORBIDDEN_STAGE, "DP2")
-		//slf.AddForbidden(1, 8, FORBIDDEN_STAGE, "DP2")
-
-		//teas := map[string]string{}
-
-		//teas[`王棋`]=`1,5|1,8|2,5|3,3|3,4|3,8|3,10|4,1|4,2|4,3|4,5|4,8|5,1|`
-		//teas[`EMMETT MARTIN O'BRIEN`]=`1,3|1,4|1,6|1,7|2,3|2,4|3,4|3,5|4,2|4,3|4,7|4,8|5,3|5,4|`
-		//teas[`高艳芳`]=`1,3|1,4|1,7|2,5|2,8|2,9|`
-		//teas[`刘传云`]=`1,3|1,6|2,3|2,4|2,5|3,1|3,8|3,9|4,3|4,9|5,1|5,2|`
-		//teas[`Rebecca Hebert`]=`1,3|1,4|1,8|2,1|2,8|2,9|3,3|3,8|3,9|4,5|4,8|4,9|5,4|5,5|`
-		//teas[`DAVID BRUCE WINDSOR BROWN`]=`1,3|1,4|1,8|2,1|2,8|2,9|3,3|3,8|3,9|4,5|4,8|4,9|5,4|5,5|`
-		//teas[`刘娜`]=`1,3|1,4|1,8|2,1|2,8|2,9|3,3|3,8|3,9|4,5|4,8|4,9|5,4|5,5|`
-		//teas[`HUGH MARCUS BOND`]=`1,3|1,4|1,8|2,1|2,8|2,9|3,3|3,8|3,9|4,5|4,8|4,9|5,4|5,5|`
-		//teas[`WADE MORGAN WERNER`]=`1,3|1,4|1,8|2,1|2,8|2,9|3,3|3,8|3,9|4,5|4,8|4,9|5,4|5,5|`
-		//teas[`刘益君`]=`1,6|2,5|3,2|4,4|`
-		//teas[`外教X`]=`1,4|1,5|1,8|2,2|2,3|2,8|3,1|3,2|3,5|3,6|3,7|3,8|3,10|4,2|4,3|4,7|4,8|5,1|5,2|5,3|5,6|5,7|`
-		//teas[`罗倩`]=`2,4|3,10|4,1|5,1|`
-		//teas[`mocha(师悦-司机)`]=`2,1|3,2|3,3|4,1|4,2|4,7|5,2|5,3|5,6|5,7|`
-		//teas[`陶真`]=`3,2|4,1|4,2|5,3|`
-		//teas[`吴磊`]=`1,7|1,8|2,2|2,3|3,1|3,2|3,6|4,1|4,2|4,3|4,7|5,2|5,3|5,7|`
-		//teas[`mocha(教师)`]=`3,5|4,4|5,5|`
-		//teas[`mocha(师悦)`]=`1,6|2,3|2,8|3,3|3,4|3,5|4,2|4,6|5,6|5,7|`
-		//teas[`旷涛群`]=`2,1|2,2|2,3|3,4|3,6|3,7|4,3|4,4|4,8|5,3|5,4|5,5|`
-		//teas[`张丽苹`]=`1,7|2,2|3,5|4,4|4,9|5,6|`
-		//teas[`朱雪华`]=`1,6|2,2|3,1|3,7|4,4|4,6|`
-		//teas[`蔡洋`]=`1,6|1,7|2,4|2,5|3,6|3,7|3,9|3,10|4,6|4,7|5,1|5,2|5,3|5,4|`
-		//teas[`Jessie`]=`2,4|2,5|2,9|4,4|4,7|5,1|`
-		//teas[`钱亚雯`]=`3,1|3,7|3,9|5,2|5,6|5,7|`
-		//teas[`Jessica Hart`]=`1,5|2,1|3,1|3,10|4,5|5,6|`
-		//teas[`沈波`]=`2,2|3,5|4,9|`
-		//teas[`AHMAD WALI`]=`1,5|2,4|2,9|3,4|3,6|3,7|3,10|4,4|4,5|4,7|5,4|5,5|5,7|`
-		//teas[`康彬`]=`2,1|3,2|3,10|4,1|4,6|5,1|5,2|`
-		//teas[`NIKOLAOS BITOS`]=`2,4|3,1|3,4|3,6|3,7|4,1|4,6|`
-		//teas[`朱雅琪`]=`1,7|1,8|2,2|2,3|3,4|3,6|4,3|4,6|5,6|5,7|`
-		//teas[`杨静`]=`1,5|1,6|1,7|`
-		//
-		//for name, str := range teas {
-		//	for _, s := range strings.Split(str, "|") {
-		//		if strings.TrimSpace(s) != "" {
-		//			ws := strings.Split(s, ",")
-		//			w, errw := strconv.Atoi(ws[0])
-		//			if errw != nil {
-		//				panic(errw)
-		//			}
-		//			s, errs := strconv.Atoi(ws[1])
-		//			if errs != nil {
-		//				panic(errs)
-		//			}
-		//			slf.AddForbidden(w, s, FORBIDDEN_TEACHER, name)
-		//		}
-		//	}
-		//
-		//
-		//}
 	}
+
+	// 尽量连排，同时尽量保证每个课程每天不超过2节
+	slf.TryContinuous = true
+	slf.WeekNumRangMax = 2
+
+	// DP2 VA: HL 必须2节连排
+	slf.MustContinuousTwo = append(slf.MustContinuousTwo, "G10RoseA Optional class Pre IB VA")
+	slf.MustContinuousTwo = append(slf.MustContinuousTwo, "G10RoseB Optional class Pre A level Art")
+	slf.MustContinuousTwo = append(slf.MustContinuousTwo, "G10Ginkgo Optional class Pre IB Music")
+	slf.MustContinuousTwo = append(slf.MustContinuousTwo, "G9Beech Compulsory Art & music（choose 1 out of 2)")
+	slf.MustContinuousTwo = append(slf.MustContinuousTwo, "G9Rose Compulsory Art & Design  & music （choose 1 out of 2)")
+	//
+	//
+	//		// 所有课程必须2节连排
+	//		slf.MustContinuousTwo = append(slf.MustContinuousTwo, strings.Split(`DP2 physics HL+SL+A-level
+	//DP2 physics HL+A-level
+	//G12 physics A-level
+	//DP2 chemistry HL+SL
+	//DP2 chemistry HL
+	//DP2 Biology HL&SL
+	//DP2 Biology HL
+	//DP2 ESS
+	//DP2 Sports sceince SL
+	//G12 Alevel biology
+	//DP2 TOK in Chinese
+	//DP2 TOK in English
+	//G12 Alevel Critical thinking and writing (CTW)
+	//DP2 English B: HL
+	//DP2 English B: SL
+	//G12 English (AS Level 9093)
+	//Combined A-level English
+	//DP2 Eco: HL&SL
+	//DP2 Eco: HL
+	//DP2 BM: HL & SL
+	//DP2 BM: HL
+	//DP2 Psychology: HL &SL
+	//DP2 Psychology: HL
+	//DP2 Alevel Economics
+	//DP2 Chinese A: literature HL & SL
+	//DP2 Chinese A: literature HL
+	//DP2 Chinese A:language &literature SL & HL
+	//DP2 Chinese A:language &literature HL
+	//DP2 Math AA: HL
+	//DP2 Math AA: SL
+	//G12 A-level Math (Pure)
+	//G12 A-level Math (Prob&Stats)
+	//DP2 VA: HL
+	//DP1 physics HL + SL
+	//DP1 physics HL
+	//DP1 chemistry HL/SL + A level
+	//DP1 chemistry HL + A level
+	//G11 chemistry A level
+	//DP1 Biology HL/SL
+	//G11 Biology A level
+	//DP1 Sports sceince HL+SL
+	//DP1 Sports sceince HL
+	//DP1 ESS
+	//G11 Alevel Critical thinking and writing (CTW) &IPQ
+	//DP1 English B: HL
+	//DP1 English B: SL
+	//DP1 English B: SL Rebecca
+	//DP1 English B: SL Tina
+	//DP1 Eco: HL&SL
+	//DP1 Eco: HL
+	//DP1 BM: HL & SL
+	//DP1 BM: HL
+	//G11 A level BM
+	//DP1 Psychology: HL &SL
+	//DP1 Psychology: HL
+	//G11 A level Economics
+	//G11 A level Psychology
+	//DP1 Chinese A: literature HL & SL
+	//DP1 Chinese A: literature HL
+	//DP1 Chinese A:language &literature SL A&B
+	//DP1 Chinese A:language &literature SL X&Y
+	//DP1 Chinese A:language &literature HL
+	//DP1 Math AA: HL
+	//DP1 Math AA: SL
+	//G11 Alevel math
+	//DP1 VA: HL +SL
+	//DP1 VA: HL
+	//DP1 Music: HL +SL
+	//DP1 Music: HL`, "\n")...)
+	//
+
+	//
+	//slf.AddForbidden(1, 1, FORBIDDEN_DEFAULT)
+	//slf.AddForbidden(5, 11, FORBIDDEN_DEFAULT)
+	//
+	//
+	// 禁牌课位，周五7、8、9、10节，周二10节、周四10节
+	slf.AddForbidden(1, 1, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(2, 10, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(4, 10, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(5, 8, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(5, 9, FORBIDDEN_DEFAULT)
+	slf.AddForbidden(5, 10, FORBIDDEN_DEFAULT)
+	//slf.AddForbidden(2, 10, FORBIDDEN_DEFAULT)
+	//slf.AddForbidden(4, 10, FORBIDDEN_DEFAULT)
+	//
+	//// 全年级School counselling课
+	//slf.AddForbidden(1, 8, FORBIDDEN_DEFAULT)
+	//
+	// 给TOK预留的课位，禁排高二周一9、10节
+	slf.AddForbidden(2, 8, FORBIDDEN_STAGE, "G10A")
+	slf.AddForbidden(2, 9, FORBIDDEN_STAGE, "G10A")
+	slf.AddForbidden(4, 8, FORBIDDEN_STAGE, "G10A")
+	slf.AddForbidden(4, 9, FORBIDDEN_STAGE, "G10A")
+	slf.AddForbidden(2, 8, FORBIDDEN_STAGE, "G10B")
+	slf.AddForbidden(2, 9, FORBIDDEN_STAGE, "G10B")
+	slf.AddForbidden(4, 8, FORBIDDEN_STAGE, "G10B")
+	slf.AddForbidden(4, 9, FORBIDDEN_STAGE, "G10B")
+	slf.AddForbidden(2, 8, FORBIDDEN_STAGE, "G9B")
+	slf.AddForbidden(2, 9, FORBIDDEN_STAGE, "G9B")
+	slf.AddForbidden(4, 8, FORBIDDEN_STAGE, "G9B")
+	slf.AddForbidden(4, 9, FORBIDDEN_STAGE, "G9B")
+	slf.AddForbidden(2, 8, FORBIDDEN_STAGE, "G9R")
+	slf.AddForbidden(2, 9, FORBIDDEN_STAGE, "G9R")
+	slf.AddForbidden(4, 8, FORBIDDEN_STAGE, "G9R")
+	slf.AddForbidden(4, 9, FORBIDDEN_STAGE, "G9R")
+	//slf.AddForbidden(1, 10, FORBIDDEN_STAGE, "DP2")
+	//slf.AddForbidden(1, 8, FORBIDDEN_STAGE, "DP2")
+
+	//teas := map[string]string{}
+
+	//teas[`王棋`]=`1,5|1,8|2,5|3,3|3,4|3,8|3,10|4,1|4,2|4,3|4,5|4,8|5,1|`
+	//teas[`EMMETT MARTIN O'BRIEN`]=`1,3|1,4|1,6|1,7|2,3|2,4|3,4|3,5|4,2|4,3|4,7|4,8|5,3|5,4|`
+	//teas[`高艳芳`]=`1,3|1,4|1,7|2,5|2,8|2,9|`
+	//teas[`刘传云`]=`1,3|1,6|2,3|2,4|2,5|3,1|3,8|3,9|4,3|4,9|5,1|5,2|`
+	//teas[`Rebecca Hebert`]=`1,3|1,4|1,8|2,1|2,8|2,9|3,3|3,8|3,9|4,5|4,8|4,9|5,4|5,5|`
+	//teas[`DAVID BRUCE WINDSOR BROWN`]=`1,3|1,4|1,8|2,1|2,8|2,9|3,3|3,8|3,9|4,5|4,8|4,9|5,4|5,5|`
+	//teas[`刘娜`]=`1,3|1,4|1,8|2,1|2,8|2,9|3,3|3,8|3,9|4,5|4,8|4,9|5,4|5,5|`
+	//teas[`HUGH MARCUS BOND`]=`1,3|1,4|1,8|2,1|2,8|2,9|3,3|3,8|3,9|4,5|4,8|4,9|5,4|5,5|`
+	//teas[`WADE MORGAN WERNER`]=`1,3|1,4|1,8|2,1|2,8|2,9|3,3|3,8|3,9|4,5|4,8|4,9|5,4|5,5|`
+	//teas[`刘益君`]=`1,6|2,5|3,2|4,4|`
+	//teas[`外教X`]=`1,4|1,5|1,8|2,2|2,3|2,8|3,1|3,2|3,5|3,6|3,7|3,8|3,10|4,2|4,3|4,7|4,8|5,1|5,2|5,3|5,6|5,7|`
+	//teas[`罗倩`]=`2,4|3,10|4,1|5,1|`
+	//teas[`mocha(师悦-司机)`]=`2,1|3,2|3,3|4,1|4,2|4,7|5,2|5,3|5,6|5,7|`
+	//teas[`陶真`]=`3,2|4,1|4,2|5,3|`
+	//teas[`吴磊`]=`1,7|1,8|2,2|2,3|3,1|3,2|3,6|4,1|4,2|4,3|4,7|5,2|5,3|5,7|`
+	//teas[`mocha(教师)`]=`3,5|4,4|5,5|`
+	//teas[`mocha(师悦)`]=`1,6|2,3|2,8|3,3|3,4|3,5|4,2|4,6|5,6|5,7|`
+	//teas[`旷涛群`]=`2,1|2,2|2,3|3,4|3,6|3,7|4,3|4,4|4,8|5,3|5,4|5,5|`
+	//teas[`张丽苹`]=`1,7|2,2|3,5|4,4|4,9|5,6|`
+	//teas[`朱雪华`]=`1,6|2,2|3,1|3,7|4,4|4,6|`
+	//teas[`蔡洋`]=`1,6|1,7|2,4|2,5|3,6|3,7|3,9|3,10|4,6|4,7|5,1|5,2|5,3|5,4|`
+	//teas[`Jessie`]=`2,4|2,5|2,9|4,4|4,7|5,1|`
+	//teas[`钱亚雯`]=`3,1|3,7|3,9|5,2|5,6|5,7|`
+	//teas[`Jessica Hart`]=`1,5|2,1|3,1|3,10|4,5|5,6|`
+	//teas[`沈波`]=`2,2|3,5|4,9|`
+	//teas[`AHMAD WALI`]=`1,5|2,4|2,9|3,4|3,6|3,7|3,10|4,4|4,5|4,7|5,4|5,5|5,7|`
+	//teas[`康彬`]=`2,1|3,2|3,10|4,1|4,6|5,1|5,2|`
+	//teas[`NIKOLAOS BITOS`]=`2,4|3,1|3,4|3,6|3,7|4,1|4,6|`
+	//teas[`朱雅琪`]=`1,7|1,8|2,2|2,3|3,4|3,6|4,3|4,6|5,6|5,7|`
+	//teas[`杨静`]=`1,5|1,6|1,7|`
+	//
+	//for name, str := range teas {
+	//	for _, s := range strings.Split(str, "|") {
+	//		if strings.TrimSpace(s) != "" {
+	//			ws := strings.Split(s, ",")
+	//			w, errw := strconv.Atoi(ws[0])
+	//			if errw != nil {
+	//				panic(errw)
+	//			}
+	//			s, errs := strconv.Atoi(ws[1])
+	//			if errs != nil {
+	//				panic(errs)
+	//			}
+	//			slf.AddForbidden(w, s, FORBIDDEN_TEACHER, name)
+	//		}
+	//	}
+	//
+	//
+	//}
 
 }
 
@@ -734,7 +744,7 @@ func (slf *Plan) draw(stage string) error {
 		for w, week := range slf.Journeys {
 			// 增加周次标题
 			cell := sheet.Rows[0].Cells[w+1]
-			cell.SetString(fmt.Sprint("周", w+1))
+			cell.SetString(fmt.Sprint("天", w+1))
 
 			for s, _ := range week {
 				// 增加节次标题
